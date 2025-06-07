@@ -22,15 +22,14 @@ export class LoginComponent {
 
   onSubmit() {
 
-    this.auth.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.router.navigate(['/']); // Redirect to home or another page on successful login
-
+    this.auth.login(this.loginForm.value).subscribe(
+      (response) => {
+        this.router.navigate(['/contacts']);
       },
-      error: (err) => {
+      (error) => {
         this.errorMessage = 'Login failed. Please check your credentials.';
-        console.error(err);
-      }
-    });
+        console.error('Login error:', error);
+      },
+    );
   }
 }
