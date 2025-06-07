@@ -1,0 +1,28 @@
+<div style="max-width: 900px; margin: auto; padding: 2rem;">
+  <h2>Contacts</h2>
+
+  <table >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let contact of contacts">
+        <td>{{ contact.name }}</td>
+        <td>{{ contact.phone }}</td>
+        <td>{{ contact.address }}</td>
+        <td>{{ contact.notes }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 1rem;">
+    <button (click)="prevPage()" [disabled]="page === 1">Prev</button>
+    <span>Page {{ page }}</span>
+    <button (click)="nextPage()" [disabled]="contacts.length < pageSize">Next</button>
+  </div>
+</div>
