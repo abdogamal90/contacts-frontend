@@ -22,8 +22,6 @@ export class ContactsComponent implements OnInit {
   page = 1;
   pageSize = 5;
 
-
-
   constructor(private contactsService: ContactsService) {}
 
   ngOnInit() {

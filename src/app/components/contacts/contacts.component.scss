@@ -1,24 +1,50 @@
-table{
-  width: 100%;
-  border-collapse: collapse;
+.contacts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1.5fr;
+  gap: 1px;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-th, td {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
+.grid-header {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  padding: 12px;
+  border-bottom: 2px solid #ccc;
 }
 
-th {
-  background-color: #f4f4f4;
-  text-align: left;
+.grid-content {
+  background-color: white;
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
 }
-td {
-  background-color: #fff;
+
+.grid-content:hover {
+  background-color: #f9f9f9;
 }
-td:hover {
-  background-color: #f1f1f1;
+
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
-td a {
-  color: #007bff;
-  text-decoration: none;
+
+.pagination button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

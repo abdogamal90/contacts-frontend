@@ -21,7 +21,6 @@ export class LoginComponent {
   }
 
   onSubmit() {
-
     this.auth.login(this.loginForm.value).subscribe(
       (response) => {
         this.router.navigate(['/contacts']);

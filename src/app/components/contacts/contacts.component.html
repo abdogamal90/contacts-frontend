@@ -1,28 +1,23 @@
-<div style="max-width: 900px; margin: auto; padding: 2rem;">
+<main>
   <h2>Contacts</h2>
 
-  <table >
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Address</th>
-        <th>Notes</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let contact of contacts">
-        <td>{{ contact.name }}</td>
-        <td>{{ contact.phone }}</td>
-        <td>{{ contact.address }}</td>
-        <td>{{ contact.notes }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="contacts-grid">
+    <div class="grid-header">Name</div>
+    <div class="grid-header">Phone</div>
+    <div class="grid-header">Address</div>
+    <div class="grid-header">Notes</div>
 
-  <div style="margin-top: 1rem;">
+    <ng-container *ngFor="let contact of contacts">
+      <div class="grid-content">{{ contact.name }}</div>
+      <div class="grid-content">{{ contact.phone }}</div>
+      <div class="grid-content">{{ contact.address }}</div>
+      <div class="grid-content">{{ contact.notes }}</div>
+    </ng-container>
+  </div>
+
+  <div class="pagination">
     <button (click)="prevPage()" [disabled]="page === 1">Prev</button>
     <span>Page {{ page }}</span>
     <button (click)="nextPage()" [disabled]="contacts.length < pageSize">Next</button>
   </div>
-</div>
+</main>
