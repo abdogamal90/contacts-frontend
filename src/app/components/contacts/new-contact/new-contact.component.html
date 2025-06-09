@@ -1,0 +1,10 @@
+<form [formGroup]="contactForm">
+  <input type="text" formControlName="name" placeholder="Name" required>
+  <input type="text" formControlName="phone" placeholder="Phone" required>
+  <input type="text" formControlName="address" placeholder="Address">
+  <textarea formControlName="notes" placeholder="Notes"></textarea>
+  <button (click)="createContact()">Create Contact</button>
+</form>
+<div *ngIf="errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>

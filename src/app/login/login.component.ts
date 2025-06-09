@@ -27,7 +27,6 @@ export class LoginComponent {
       },
       (error) => {
         this.errorMessage = 'Login failed. Please check your credentials.';
-        console.error('Login error:', error);
       },
     );
   }

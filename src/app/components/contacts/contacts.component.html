@@ -1,18 +1,57 @@
 <main>
-  <h2>Contacts</h2>
+  <div class="header">
+    <h2>Contacts</h2>
+    <button (click)="addContact()">Add Contact</button>
+    <button (click)="logout()">Logout</button>
+  </div>
+  
+  <main class="filters-grid">
+    <div class="filter-item">
+      <label for="name">Name</label>
+      <input type="text" id="name" [(ngModel)]="filters.name" (ngModelChange)="onFilterChange()" placeholder="Search by name">
+    </div>
 
-  <div class="contacts-grid">
-    <div class="grid-header">Name</div>
-    <div class="grid-header">Phone</div>
-    <div class="grid-header">Address</div>
-    <div class="grid-header">Notes</div>
+    <div class="filter-item">
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" [(ngModel)]="filters.phone" (ngModelChange)="onFilterChange()" placeholder="Search by phone">
+    </div>
 
-    <ng-container *ngFor="let contact of contacts">
-      <div class="grid-content">{{ contact.name }}</div>
-      <div class="grid-content">{{ contact.phone }}</div>
-      <div class="grid-content">{{ contact.address }}</div>
-      <div class="grid-content">{{ contact.notes }}</div>
-    </ng-container>
+    <div class="filter-item">
+      <label for="address">Address</label>
+      <input type="text" id="address" [(ngModel)]="filters.address" (ngModelChange)="onFilterChange()" placeholder="Search by address">
+    </div>
+  </main>
+
+   <div class="card-container">
+    <div class="contact-card" *ngFor="let contact of contacts">
+      <ng-container *ngIf="editingContact?._id === contact._id; else viewMode">
+        <form [formGroup]="contactForm" *ngIf="editingContact">
+          <input formControlName="name" placeholder="Name" />
+          <input formControlName="phone" placeholder="Phone" pattern="[0-9]*" />
+          <input formControlName="address" placeholder="Address" />
+          <input formControlName="notes" placeholder="Notes" />
+          <div class="actions">
+            <button (click)="saveContact()">Save</button>
+            <button (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+        <div *ngIf="contactForm.invalid && (contactForm.dirty || contactForm.touched)" class="error-message">
+          <p *ngIf="contactForm.get('phone')?.hasError('pattern')">Phone must be numeric.</p>
+        </div>
+      </ng-container>
+
+      <ng-template #viewMode>
+        <h3>{{ contact.name }}</h3>
+        <p><strong>Phone:</strong> {{ contact.phone }}</p>
+        <p><strong>Address:</strong> {{ contact.address }}</p>
+        <p><strong>Notes:</strong> {{ contact.notes }}</p>
+
+        <div class="actions">
+          <button (click)="startEdit(contact)">Edit</button>
+          <button (click)="deleteContact(contact)">Delete</button>
+        </div>
+      </ng-template>
+    </div>
   </div>
 
   <div class="pagination">

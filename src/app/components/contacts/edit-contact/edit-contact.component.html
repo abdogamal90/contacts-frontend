@@ -1,0 +1,7 @@
+<form (ngSubmit)="editContact()" #contactForm="ngForm">
+  <input type="text" name="name" [(ngModel)]="contact.name" placeholder="Name" required>
+  <input type="text" name="phone" [(ngModel)]="contact.phone" placeholder="Phone" required>
+  <input type="text" name="address" [(ngModel)]="contact.address" placeholder="Address">
+  <textarea name="notes" [(ngModel)]="contact.notes" placeholder="Notes"></textarea>
+  <button type="submit">Edit Contact</button>
+</form>
