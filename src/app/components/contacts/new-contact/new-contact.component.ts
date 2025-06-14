@@ -32,13 +32,18 @@ export class NewContactComponent {
   }
 
   errorMessage: string | null = null;
-
+  // add a check if a field is already exists in the database
+  // and show a message if it does
   createContact() {
     if (this.contactForm.valid) {
       this.contactsService.createContact(this.contactForm.value).subscribe(() => {
         this.router.navigate(['/contacts']);
       }, error => {
-        this.errorMessage = 'Failed to create contact. Please try again later.';
+        if (error.status === 400) {
+          this.errorMessage = 'Invalid contact data. Please check the form fields.';
+        } else {
+          this.errorMessage = error.error.error
+        }
       });
     } else {
       if (this.contactForm.get('name')?.invalid) {

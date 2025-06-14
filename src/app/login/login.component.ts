@@ -24,6 +24,7 @@ export class LoginComponent {
     this.auth.login(this.loginForm.value).subscribe(
       (response) => {
         this.router.navigate(['/contacts']);
+        localStorage.setItem('username', this.loginForm.value.username);
       },
       (error) => {
         this.errorMessage = 'Login failed. Please check your credentials.';

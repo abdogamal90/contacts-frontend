@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Contact } from '../../model/Contact';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SocketService } from '../../services/socket.service';
 @Component({
   selector: 'app-contacts',
   imports: [FormsModule, CommonModule, RouterModule, ReactiveFormsModule],
@@ -19,14 +20,19 @@ export class ContactsComponent implements OnInit {
   totalPages = 1;
   editingContact: Contact | null = null;
   contactForm: FormGroup = new FormGroup({});
-
+  contactId: string ='';
+  isLocked = false;
+  lockedBy: string = ''
+  lockedContacts: { [key: string]: string } = {};
+  username = localStorage.getItem('username') || 'user1'; // Default username if not set
+  
   filters = {
     name: '',
     phone: '',
     address: ''
   };
 
-  constructor(private contactsService: ContactsService, private router: Router) {
+  constructor(private contactsService: ContactsService, private router: Router, private socketService: SocketService) {
     this.contactForm = new FormGroup({
       name: new FormControl(this.editingContact ? this.editingContact.name : ''),
       phone: new FormControl(this.editingContact ? this.editingContact.phone : '',Validators.pattern('^[0-9]+$')),
@@ -37,6 +43,19 @@ export class ContactsComponent implements OnInit {
 
   ngOnInit() {
     this.loadContacts();
+    this.socketService.onEditingStatusChanged((data) => {
+      if (data.isEditing) {
+        this.lockedContacts[data.contactId] = data.username;
+      } else {
+        delete this.lockedContacts[data.contactId];
+      }
+
+      // If you're editing this contact and it's locked by someone else, update isLocked state
+      if (this.editingContact && this.editingContact._id === data.contactId) {
+        this.isLocked = data.username !== this.username;
+        this.lockedBy = data.username;
+      }
+    });
   }
 
   loadContacts() {
@@ -75,6 +94,8 @@ export class ContactsComponent implements OnInit {
         this.contactsService.deleteContact(contact._id).subscribe(() => {
           alert('Deleted!');
           this.loadContacts();
+        }, error =>{
+          alert(error.error.error)
         });
       } else {
         alert('Contact ID is missing.');
@@ -93,18 +114,33 @@ export class ContactsComponent implements OnInit {
 
 
   startEdit(contact: Contact) {
+    console.log(this.isLocked, this.lockedBy, this.username);
+     if (this.isLocked && this.lockedBy !== this.username) {
+      alert(`This contact is being edited by ${this.lockedBy}`);
+      return;
+    }
     this.editingContact = { ...contact };
-
+    // Notify the socket service that editing has started
+    if (!contact._id) {
+      alert('Contact ID is missing.');
+      return;
+    }
+    this.contactId = contact._id;
+    this.socketService.startEditing(contact._id, this.username);
+    
     this.contactForm = new FormGroup({
       name: new FormControl(contact.name, Validators.required),
       phone: new FormControl(contact.phone, [Validators.required, Validators.pattern('^[0-9]+$')]),
       address: new FormControl(contact.address),
       notes: new FormControl(contact.notes),
     });
+    console.log(this.isLocked);
   }
 
   cancelEdit() {
     this.editingContact = null;
+    this.socketService.stopEditing(this.contactId);
+    this.isLocked = false;
   }
 
   saveContact() {
@@ -119,9 +155,11 @@ export class ContactsComponent implements OnInit {
       updated => {
         this.contacts = this.contacts.map(c => c._id === updated._id ? updated : c);
         this.editingContact = null;
+        this.socketService.stopEditing(this.contactId);
+        this.isLocked = false;
       },
       err => {
-        console.error('Update failed', err);
+        alert(err.error.error);
       }
     );
   }

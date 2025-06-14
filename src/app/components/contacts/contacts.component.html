@@ -26,12 +26,12 @@
     <div class="contact-card" *ngFor="let contact of contacts">
       <ng-container *ngIf="editingContact?._id === contact._id; else viewMode">
         <form [formGroup]="contactForm" *ngIf="editingContact">
-          <input formControlName="name" placeholder="Name" />
-          <input formControlName="phone" placeholder="Phone" pattern="[0-9]*" />
-          <input formControlName="address" placeholder="Address" />
-          <input formControlName="notes" placeholder="Notes" />
+          <input formControlName="name" placeholder="Name" [readonly]="isLocked"  />
+          <input formControlName="phone" placeholder="Phone" pattern="[0-9]*" [readonly]="isLocked"  />
+          <input formControlName="address" placeholder="Address" [readonly]="isLocked"  />
+          <input formControlName="notes" placeholder="Notes" [readonly]="isLocked"  />
           <div class="actions">
-            <button (click)="saveContact()">Save</button>
+            <button  (click)="saveContact()">Save</button>
             <button (click)="cancelEdit()">Cancel</button>
           </div>
         </form>
@@ -47,8 +47,12 @@
         <p><strong>Notes:</strong> {{ contact.notes }}</p>
 
         <div class="actions">
-          <button (click)="startEdit(contact)">Edit</button>
-          <button (click)="deleteContact(contact)">Delete</button>
+        <button 
+          [disabled]="contact._id && lockedContacts[contact._id] && lockedContacts[contact._id] !== username"
+          (click)="startEdit(contact)">
+          Edit
+        </button>          
+        <button (click)="deleteContact(contact)">Delete</button>
         </div>
       </ng-template>
     </div>
@@ -60,3 +64,7 @@
     <button (click)="nextPage()" [disabled]="contacts.length < pageSize">Next</button>
   </div>
 </main>
+
+<div *ngIf="isLocked" class="alert alert-warning">
+  Contact is being edited by {{ lockedBy }}. You cannot edit now.
+</div>
