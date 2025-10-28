@@ -72,10 +72,19 @@ export class ContactsComponent implements OnInit {
       limit: this.pageSize,
     };
 
-    this.contactsService.getContacts(this.filters, this.page, this.pageSize).subscribe(data => {
-      this.contacts = data.contacts;
-      this.totalPages = data.totalPages;
-      this.page = data.page;
+    this.contactsService.getContacts(this.filters, this.page, this.pageSize).subscribe({
+      next: (data) => {
+        this.contacts = data.contacts;
+        this.totalPages = data.totalPages;
+        this.page = data.page;
+      },
+      error: (error) => {
+        // Error is already handled by the interceptor
+        // Just reset the contacts array
+        this.contacts = [];
+        this.totalPages = 1;
+        this.page = 1;
+      }
     });
   }
 
