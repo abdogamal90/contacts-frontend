@@ -22,6 +22,17 @@ export class AuthService {
       );
   }
 
+  register(credentials: { username: string; email: string; password: string }) {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/auth/register`, credentials)
+      .pipe(
+        tap(res => {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('token', res.token);
+          }
+        })
+      );
+  }
+
   getToken(): string | null {
     if (typeof window === 'undefined' || !window.localStorage) return null;
     return localStorage.getItem('token');
@@ -56,7 +67,7 @@ export class AuthService {
       localStorage.removeItem('token');
       localStorage.removeItem('username');
     }
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
 }

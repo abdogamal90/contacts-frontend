@@ -6,9 +6,11 @@ import { NewContactComponent } from './components/contacts/new-contact/new-conta
 import { EditContactComponent } from './components/contacts/edit-contact/edit-contact.component';
 import { ProfileComponent } from './profile/profile.component';
 import { WelcomePageComponent } from './components/welcome-page/welcome-page.component';
+import { RegisterComponent } from './register/register.component';
 export const routes: Routes = [
   { path: '', component: WelcomePageComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'contacts', component: ContactsComponent, canActivate: [authGuard] },
   { path: 'contacts/add', component: NewContactComponent, canActivate: [authGuard] },
   { path: 'contacts/edit/:id', component: EditContactComponent, canActivate: [authGuard] },

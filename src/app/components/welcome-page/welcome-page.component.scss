@@ -101,6 +101,17 @@
       transform: translateY(-4px);
     }
   }
+  
+  .btn-tertiary {
+    background: transparent;
+    color: white;
+    border: 2px solid transparent;
+    
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-4px);
+    }
+  }
 }
 
 .hero-image {
