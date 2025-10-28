@@ -133,7 +133,6 @@ export class ContactsComponent implements OnInit {
 
 
   startEdit(contact: Contact) {
-    console.log(this.isLocked, this.lockedBy, this.username);
      if (this.isLocked && this.lockedBy !== this.username) {
       this.notification.warning(`This contact is being edited by ${this.lockedBy}`);
       return;
@@ -166,7 +165,6 @@ export class ContactsComponent implements OnInit {
         Validators.maxLength(500)
       ]),
     });
-    console.log(this.isLocked);
     
     // Auto-focus the first field
     setTimeout(() => {
