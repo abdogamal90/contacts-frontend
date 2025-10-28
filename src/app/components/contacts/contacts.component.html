@@ -1,70 +1,259 @@
-<main>
-  <div class="header">
-    <h2>Contacts</h2>
-    <button (click)="addContact()">Add Contact</button>
-    <button (click)="logout()">Logout</button>
+<div class="contacts-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>My Contacts</h1>
+      <p class="subtitle">Manage and organize your contacts</p>
+    </div>
+    <button class="btn-add" routerLink="/contacts/add">
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      <span>Add Contact</span>
+    </button>
   </div>
-  
-  <main class="filters-grid">
-    <div class="filter-item">
-      <label for="name">Name</label>
-      <input type="text" id="name" [(ngModel)]="filters.name" (ngModelChange)="onFilterChange()" placeholder="Search by name">
-    </div>
 
-    <div class="filter-item">
-      <label for="phone">Phone</label>
-      <input type="text" id="phone" [(ngModel)]="filters.phone" (ngModelChange)="onFilterChange()" placeholder="Search by phone">
-    </div>
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <label for="name">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          Search by Name
+        </label>
+        <input type="text" id="name" [(ngModel)]="filters.name" (ngModelChange)="onFilterChange()" placeholder="Enter name...">
+      </div>
 
-    <div class="filter-item">
-      <label for="address">Address</label>
-      <input type="text" id="address" [(ngModel)]="filters.address" (ngModelChange)="onFilterChange()" placeholder="Search by address">
-    </div>
-  </main>
+      <div class="filter-item">
+        <label for="phone">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+          Search by Phone
+        </label>
+        <input type="text" id="phone" [(ngModel)]="filters.phone" (ngModelChange)="onFilterChange()" placeholder="Enter phone...">
+      </div>
 
-   <div class="card-container">
+      <div class="filter-item">
+        <label for="address">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Search by Address
+        </label>
+        <input type="text" id="address" [(ngModel)]="filters.address" (ngModelChange)="onFilterChange()" placeholder="Enter address...">
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLocked" class="alert alert-warning">
+    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    <span>Contact is being edited by {{ lockedBy }}. You cannot edit now.</span>
+  </div>
+
+  <div class="contacts-grid">
     <div class="contact-card" *ngFor="let contact of contacts">
       <ng-container *ngIf="editingContact?._id === contact._id; else viewMode">
-        <form [formGroup]="contactForm" *ngIf="editingContact">
-          <input formControlName="name" placeholder="Name" [readonly]="isLocked"  />
-          <input formControlName="phone" placeholder="Phone" pattern="[0-9]*" [readonly]="isLocked"  />
-          <input formControlName="address" placeholder="Address" [readonly]="isLocked"  />
-          <input formControlName="notes" placeholder="Notes" [readonly]="isLocked"  />
-          <div class="actions">
-            <button  (click)="saveContact()">Save</button>
-            <button (click)="cancelEdit()">Cancel</button>
+        <div class="edit-mode-indicator">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+          <span>Editing Mode</span>
+        </div>
+
+        <form [formGroup]="contactForm" class="edit-form">
+          <div class="form-group">
+            <label for="edit-name">
+              Name <span class="required">*</span>
+            </label>
+            <input 
+              id="edit-name" 
+              formControlName="name" 
+              placeholder="Enter full name" 
+              [readonly]="isLocked"
+              [class.error]="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" />
+            <div class="field-footer">
+              <div class="validation-messages">
+                <div *ngIf="contactForm.get('name')?.hasError('required') && contactForm.get('name')?.touched" class="error-text">
+                  Name is required
+                </div>
+                <div *ngIf="contactForm.get('name')?.hasError('minlength') && contactForm.get('name')?.touched" class="error-text">
+                  Name must be at least 2 characters
+                </div>
+                <div *ngIf="contactForm.get('name')?.hasError('maxlength')" class="error-text">
+                  Name cannot exceed 50 characters
+                </div>
+              </div>
+              <span class="char-count" [class.limit-warning]="(contactForm.get('name')?.value?.length || 0) > 45">
+                {{ contactForm.get('name')?.value?.length || 0 }}/50
+              </span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit-phone">
+              Phone <span class="required">*</span>
+            </label>
+            <input 
+              id="edit-phone" 
+              formControlName="phone" 
+              placeholder="Enter phone number" 
+              type="tel"
+              [readonly]="isLocked"
+              [class.error]="contactForm.get('phone')?.invalid && contactForm.get('phone')?.touched" />
+            <div class="field-footer">
+              <div class="validation-messages">
+                <div *ngIf="contactForm.get('phone')?.hasError('required') && contactForm.get('phone')?.touched" class="error-text">
+                  Phone is required
+                </div>
+                <div *ngIf="contactForm.get('phone')?.hasError('pattern') && contactForm.get('phone')?.touched" class="error-text">
+                  Phone must contain only numbers
+                </div>
+                <div *ngIf="contactForm.get('phone')?.hasError('minlength') && contactForm.get('phone')?.touched" class="error-text">
+                  Phone must be at least 10 digits
+                </div>
+                <div *ngIf="contactForm.get('phone')?.hasError('maxlength')" class="error-text">
+                  Phone cannot exceed 15 digits
+                </div>
+              </div>
+              <span class="char-count" [class.limit-warning]="(contactForm.get('phone')?.value?.length || 0) > 13">
+                {{ contactForm.get('phone')?.value?.length || 0 }}/15
+              </span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit-address">Address</label>
+            <input 
+              id="edit-address" 
+              formControlName="address" 
+              placeholder="Enter address (optional)" 
+              [readonly]="isLocked"
+              [class.error]="contactForm.get('address')?.invalid && contactForm.get('address')?.touched" />
+            <div class="field-footer">
+              <div class="validation-messages">
+                <div *ngIf="contactForm.get('address')?.hasError('maxlength')" class="error-text">
+                  Address cannot exceed 200 characters
+                </div>
+              </div>
+              <span class="char-count" [class.limit-warning]="(contactForm.get('address')?.value?.length || 0) > 180">
+                {{ contactForm.get('address')?.value?.length || 0 }}/200
+              </span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit-notes">Notes</label>
+            <textarea 
+              id="edit-notes" 
+              formControlName="notes" 
+              placeholder="Add notes (optional)" 
+              [readonly]="isLocked" 
+              rows="4"
+              [class.error]="contactForm.get('notes')?.invalid && contactForm.get('notes')?.touched"></textarea>
+            <div class="field-footer">
+              <div class="validation-messages">
+                <div *ngIf="contactForm.get('notes')?.hasError('maxlength')" class="error-text">
+                  Notes cannot exceed 500 characters
+                </div>
+              </div>
+              <span class="char-count" [class.limit-warning]="(contactForm.get('notes')?.value?.length || 0) > 480">
+                {{ contactForm.get('notes')?.value?.length || 0 }}/500
+              </span>
+            </div>
+          </div>
+          
+          <div class="card-actions">
+            <button 
+              type="button" 
+              class="btn-save" 
+              (click)="saveContact()"
+              [disabled]="isLocked || contactForm.invalid">
+              <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span *ngIf="!isLocked">Save Changes</span>
+              <span *ngIf="isLocked">Locked</span>
+            </button>
+            <button type="button" class="btn-cancel" (click)="cancelEdit()">
+              <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Cancel
+            </button>
           </div>
         </form>
-        <div *ngIf="contactForm.invalid && (contactForm.dirty || contactForm.touched)" class="error-message">
-          <p *ngIf="contactForm.get('phone')?.hasError('pattern')">Phone must be numeric.</p>
-        </div>
       </ng-container>
 
       <ng-template #viewMode>
-        <h3>{{ contact.name }}</h3>
-        <p><strong>Phone:</strong> {{ contact.phone }}</p>
-        <p><strong>Address:</strong> {{ contact.address }}</p>
-        <p><strong>Notes:</strong> {{ contact.notes }}</p>
+        <div class="contact-header">
+          <div class="avatar">
+            {{ contact.name.charAt(0).toUpperCase() }}
+          </div>
+          <h3>{{ contact.name }}</h3>
+        </div>
+        
+        <div class="contact-info">
+          <div class="info-item">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            <span>{{ contact.phone }}</span>
+          </div>
+          
+          <div class="info-item" *ngIf="contact.address">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{{ contact.address }}</span>
+          </div>
+          
+          <div class="info-item" *ngIf="contact.notes">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+            <span>{{ contact.notes }}</span>
+          </div>
+        </div>
 
-        <div class="actions">
-        <button 
-          [disabled]="contact._id && lockedContacts[contact._id] && lockedContacts[contact._id] !== username"
-          (click)="startEdit(contact)">
-          Edit
-        </button>          
-        <button (click)="deleteContact(contact)">Delete</button>
+        <div class="card-actions">
+          <button 
+            class="btn-edit"
+            [disabled]="contact._id && lockedContacts[contact._id] && lockedContacts[contact._id] !== username"
+            (click)="startEdit(contact)">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit
+          </button>
+          <button class="btn-delete" (click)="deleteContact(contact)">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Delete
+          </button>
         </div>
       </ng-template>
     </div>
   </div>
 
   <div class="pagination">
-    <button (click)="prevPage()" [disabled]="page === 1">Prev</button>
-    <span>Page {{ page }}</span>
-    <button (click)="nextPage()" [disabled]="contacts.length < pageSize">Next</button>
+    <button class="btn-pagination" (click)="prevPage()" [disabled]="page === 1">
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      Previous
+    </button>
+    <span class="page-info">Page {{ page }}</span>
+    <button class="btn-pagination" (click)="nextPage()" [disabled]="contacts.length < pageSize">
+      Next
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
   </div>
-</main>
-
-<div *ngIf="isLocked" class="alert alert-warning">
-  Contact is being edited by {{ lockedBy }}. You cannot edit now.
 </div>

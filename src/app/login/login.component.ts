@@ -3,17 +3,23 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  errorMessage = '';
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder, 
+    private auth: AuthService, 
+    private router: Router,
+    private notification: NotificationService
+  ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
@@ -23,11 +29,12 @@ export class LoginComponent {
   onSubmit() {
     this.auth.login(this.loginForm.value).subscribe(
       (response) => {
-        this.router.navigate(['/contacts']);
+        this.notification.success('Login successful! Welcome back.');
         localStorage.setItem('username', this.loginForm.value.username);
+        this.router.navigate(['/contacts']);
       },
       (error) => {
-        this.errorMessage = 'Login failed. Please check your credentials.';
+        this.notification.handleError(error, 'Login failed. Please check your credentials.');
       },
     );
   }

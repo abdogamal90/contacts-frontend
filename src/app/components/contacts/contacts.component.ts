@@ -7,6 +7,8 @@ import { RouterModule, Router } from '@angular/router';
 import { Contact } from '../../model/Contact';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SocketService } from '../../services/socket.service';
+import { NotificationService } from '../../services/notification.service';
+
 @Component({
   selector: 'app-contacts',
   imports: [FormsModule, CommonModule, RouterModule, ReactiveFormsModule],
@@ -32,7 +34,12 @@ export class ContactsComponent implements OnInit {
     address: ''
   };
 
-  constructor(private contactsService: ContactsService, private router: Router, private socketService: SocketService) {
+  constructor(
+    private contactsService: ContactsService, 
+    private router: Router, 
+    private socketService: SocketService,
+    private notification: NotificationService
+  ) {
     this.contactForm = new FormGroup({
       name: new FormControl(this.editingContact ? this.editingContact.name : ''),
       phone: new FormControl(this.editingContact ? this.editingContact.phone : '',Validators.pattern('^[0-9]+$')),
@@ -91,14 +98,17 @@ export class ContactsComponent implements OnInit {
   deleteContact(contact: Contact) {
     if (confirm(`Delete contact ${contact.name}?`)) {
       if (contact._id) {
-        this.contactsService.deleteContact(contact._id).subscribe(() => {
-          alert('Deleted!');
-          this.loadContacts();
-        }, error =>{
-          alert(error.error.error)
-        });
+        this.contactsService.deleteContact(contact._id).subscribe(
+          () => {
+            this.notification.success(`Contact "${contact.name}" deleted successfully!`);
+            this.loadContacts();
+          }, 
+          error => {
+            this.notification.handleError(error, 'Failed to delete contact');
+          }
+        );
       } else {
-        alert('Contact ID is missing.');
+        this.notification.error('Contact ID is missing');
       }
     }
   }
@@ -116,35 +126,67 @@ export class ContactsComponent implements OnInit {
   startEdit(contact: Contact) {
     console.log(this.isLocked, this.lockedBy, this.username);
      if (this.isLocked && this.lockedBy !== this.username) {
-      alert(`This contact is being edited by ${this.lockedBy}`);
+      this.notification.warning(`This contact is being edited by ${this.lockedBy}`);
       return;
     }
     this.editingContact = { ...contact };
     // Notify the socket service that editing has started
     if (!contact._id) {
-      alert('Contact ID is missing.');
+      this.notification.error('Contact ID is missing');
       return;
     }
     this.contactId = contact._id;
     this.socketService.startEditing(contact._id, this.username);
     
     this.contactForm = new FormGroup({
-      name: new FormControl(contact.name, Validators.required),
-      phone: new FormControl(contact.phone, [Validators.required, Validators.pattern('^[0-9]+$')]),
-      address: new FormControl(contact.address),
-      notes: new FormControl(contact.notes),
+      name: new FormControl(contact.name, [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(50)
+      ]),
+      phone: new FormControl(contact.phone, [
+        Validators.required, 
+        Validators.pattern('^[0-9]+$'),
+        Validators.minLength(10),
+        Validators.maxLength(15)
+      ]),
+      address: new FormControl(contact.address, [
+        Validators.maxLength(200)
+      ]),
+      notes: new FormControl(contact.notes, [
+        Validators.maxLength(500)
+      ]),
     });
     console.log(this.isLocked);
+    
+    // Auto-focus the first field
+    setTimeout(() => {
+      const firstInput = document.querySelector('.edit-form input') as HTMLInputElement;
+      if (firstInput) firstInput.focus();
+    }, 100);
   }
 
   cancelEdit() {
+    if (this.contactForm.dirty && !confirm('You have unsaved changes. Are you sure you want to cancel?')) {
+      return;
+    }
     this.editingContact = null;
     this.socketService.stopEditing(this.contactId);
     this.isLocked = false;
   }
 
   saveContact() {
-    if (!this.editingContact || this.contactForm.invalid) return;
+    if (!this.editingContact) return;
+    
+    // Mark all fields as touched to show validation errors
+    Object.keys(this.contactForm.controls).forEach(key => {
+      this.contactForm.get(key)?.markAsTouched();
+    });
+
+    if (this.contactForm.invalid) {
+      this.notification.warning('Please fix the validation errors before saving');
+      return;
+    }
 
     const updatedContact = {
       ...this.editingContact,
@@ -157,9 +199,10 @@ export class ContactsComponent implements OnInit {
         this.editingContact = null;
         this.socketService.stopEditing(this.contactId);
         this.isLocked = false;
+        this.notification.success(`Contact "${updated.name}" updated successfully!`);
       },
-      err => {
-        alert(err.error.error);
+      error => {
+        this.notification.handleError(error, 'Failed to update contact');
       }
     );
   }

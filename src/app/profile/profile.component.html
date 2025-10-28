@@ -1,0 +1,115 @@
+<div class="profile-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>My Profile</h1>
+      <p class="subtitle">Manage your account settings</p>
+    </div>
+  </div>
+
+  <div class="profile-cards">
+    <!-- Username Card -->
+    <div class="profile-card">
+      <div class="card-header">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <h3>Username</h3>
+      </div>
+      <p class="card-description">Update your display name</p>
+      
+      <form [formGroup]="usernameForm" (ngSubmit)="saveUsername()" class="profile-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+            id="username"
+            type="text" 
+            formControlName="username" 
+            placeholder="Enter username"
+            [class.invalid]="usernameForm.get('username')?.invalid && usernameForm.get('username')?.touched"
+          />
+          <div class="error-text" *ngIf="usernameForm.get('username')?.hasError('required') && usernameForm.get('username')?.touched">
+            Username is required
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-primary" [disabled]="usernameForm.invalid">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>Update Username</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Password Card -->
+    <div class="profile-card">
+      <div class="card-header">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <h3>Change Password</h3>
+      </div>
+      <p class="card-description">Update your account password</p>
+      
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile-form">
+        <div class="form-group">
+          <label for="oldPassword">Current Password</label>
+          <input 
+            id="oldPassword"
+            type="password" 
+            formControlName="oldPassword" 
+            placeholder="Enter current password"
+            [class.invalid]="passwordForm.get('oldPassword')?.invalid && passwordForm.get('oldPassword')?.touched"
+          />
+          <div class="error-text" *ngIf="passwordForm.get('oldPassword')?.hasError('required') && passwordForm.get('oldPassword')?.touched">
+            Current password is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input 
+            id="newPassword"
+            type="password" 
+            formControlName="newPassword" 
+            placeholder="Enter new password"
+            [class.invalid]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched"
+          />
+          <div class="validation-messages">
+            <div class="error-text" *ngIf="passwordForm.get('newPassword')?.hasError('required') && passwordForm.get('newPassword')?.touched">
+              New password is required
+            </div>
+            <div class="error-text" *ngIf="passwordForm.get('newPassword')?.hasError('minlength') && passwordForm.get('newPassword')?.touched">
+              Password must be at least 6 characters
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-primary" [disabled]="passwordForm.invalid">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span>Change Password</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Logout Card -->
+    <div class="profile-card logout-card">
+      <div class="card-header">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <h3>Account Actions</h3>
+      </div>
+      <p class="card-description">Sign out of your account</p>
+      
+      <button type="button" class="btn-logout" (click)="logout()">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,14 +1,52 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <label>
-    Username:
-    <input formControlName="username" type="text" required />
-  </label>
-  <br />
-  <label>
-    Password:
-    <input formControlName="password" type="password" required />
-  </label>
-  <br />
-  <button type="submit" [disabled]="loginForm.invalid">Login</button>
-</form>
-<p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Welcome Back</h1>
+      <p class="subtitle">Sign in to access your contacts</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">
+          Username <span class="required">*</span>
+        </label>
+        <input 
+          id="username"
+          formControlName="username" 
+          type="text" 
+          placeholder="Enter your username"
+          [class.invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+          required 
+        />
+        <div class="error-text" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          Username is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          Password <span class="required">*</span>
+        </label>
+        <input 
+          id="password"
+          formControlName="password" 
+          type="password" 
+          placeholder="Enter your password"
+          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          required 
+        />
+        <div class="error-text" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Password is required
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-login"
+        [disabled]="loginForm.invalid"
+      >
+        <span>Sign In</span>
+      </button>
+    </form>
+  </div>
+</div>

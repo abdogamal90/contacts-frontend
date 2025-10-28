@@ -5,7 +5,7 @@ import { io, Socket } from 'socket.io-client';
 export class SocketService {
   private socket: Socket;
   constructor() {
-    this.socket = io('http://localhost:3000');
+    this.socket = io('http://localhost:8000');
   }
 
   startEditing(contactId: string, username: string) {

@@ -1,0 +1,128 @@
+<div class="welcome-container">
+  <div class="welcome-content">
+    <div class="hero-section">
+      <div class="hero-text">
+        <h1 class="main-title">
+          <span class="gradient-text">Contacts Manager</span>
+        </h1>
+        <p class="tagline">
+          Organize, manage, and connect with your contacts effortlessly
+        </p>
+        <p class="description">
+          A modern, secure, and intuitive platform to keep all your important contacts in one place. 
+          Access them anywhere, anytime.
+        </p>
+        
+        <div class="cta-buttons">
+          <button class="btn-primary" routerLink="/login">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+            <span>Get Started</span>
+          </button>
+          <button class="btn-secondary" (click)="scrollToFeatures()">
+            <span>Learn More</span>
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="hero-image">
+        <div class="illustration">
+          <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="50" y="50" width="300" height="200" rx="20" fill="url(#grad1)" opacity="0.1"/>
+            <rect x="40" y="40" width="300" height="200" rx="20" fill="url(#grad2)" opacity="0.2"/>
+            <rect x="30" y="30" width="300" height="200" rx="20" fill="white" stroke="url(#grad3)" stroke-width="2"/>
+            <circle cx="80" cy="80" r="25" fill="url(#grad4)"/>
+            <text x="80" y="90" text-anchor="middle" fill="white" font-size="24" font-weight="bold">👤</text>
+            <rect x="120" y="65" width="150" height="12" rx="6" fill="#E2E8F0"/>
+            <rect x="120" y="85" width="100" height="10" rx="5" fill="#CBD5E0"/>
+            <circle cx="60" cy="140" r="15" fill="url(#grad5)"/>
+            <text x="60" y="147" text-anchor="middle" fill="white" font-size="16">📱</text>
+            <circle cx="60" cy="180" r="15" fill="url(#grad6)"/>
+            <text x="60" y="187" text-anchor="middle" fill="white" font-size="16">✉️</text>
+            <rect x="90" y="135" width="120" height="10" rx="5" fill="#E2E8F0"/>
+            <rect x="90" y="175" width="160" height="10" rx="5" fill="#E2E8F0"/>
+            <defs>
+              <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#48bb78;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#38a169;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#4299e1;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#3182ce;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-section" id="features">
+    <h2 class="section-title">Why Choose Our Platform?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h3>Secure & Private</h3>
+        <p>Your contacts are encrypted and protected with industry-standard security measures.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h3>Lightning Fast</h3>
+        <p>Access and manage your contacts instantly with real-time synchronization.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3>Mobile Ready</h3>
+        <p>Responsive design that works seamlessly on all your devices.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <h3>Easy Organization</h3>
+        <p>Keep all your contacts organized with custom fields and smart search.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Contacts Manager. Built with Angular.</p>
+  </div>
+</div>

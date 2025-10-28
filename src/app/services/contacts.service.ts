@@ -8,7 +8,7 @@ import { Contact } from '../model/Contact';
   providedIn: 'root'
 })
 export class ContactsService {
-  private apiUrl = 'http://localhost:3000/api/contacts';
+  private apiUrl = 'http://localhost:8000/api/contacts';
 
   constructor(private http: HttpClient, private router: Router) {}
 

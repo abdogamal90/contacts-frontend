@@ -1,0 +1,30 @@
+<div class="notification-container">
+  <div 
+    *ngFor="let notification of notifications"
+    class="notification"
+    [class.notification-success]="notification.type === 'success'"
+    [class.notification-error]="notification.type === 'error'"
+    [class.notification-warning]="notification.type === 'warning'"
+    [class.notification-info]="notification.type === 'info'"
+    [@slideIn]>
+    
+    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        stroke-width="2" 
+        [attr.d]="getIcon(notification.type)" />
+    </svg>
+    
+    <span class="message">{{ notification.message }}</span>
+    
+    <button 
+      class="close-btn" 
+      (click)="removeNotification(notification.id)"
+      aria-label="Close notification">
+      <svg class="icon-close" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+</div>
