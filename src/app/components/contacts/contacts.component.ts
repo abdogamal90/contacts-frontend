@@ -34,6 +34,15 @@ export class ContactsComponent implements OnInit {
     address: ''
   };
 
+  // Tag/category/favorite filtering
+  tagsList: string[] = [];
+  selectedTags: string[] = [];
+  tagLogic: 'AND' | 'OR' = 'OR';
+  category: string | null = null;
+  isFavorite: boolean | null = null;
+  sortBy: 'name' | 'createdAt' | 'updatedAt' = 'createdAt';
+  sortOrder: 'asc' | 'desc' = 'desc';
+
   constructor(
     private contactsService: ContactsService, 
     private router: Router, 
@@ -50,6 +59,7 @@ export class ContactsComponent implements OnInit {
 
   ngOnInit() {
     this.loadContacts();
+    this.loadTags();
     this.socketService.onEditingStatusChanged((data) => {
       if (data.isEditing) {
         this.lockedContacts[data.contactId] = data.username;
@@ -66,17 +76,20 @@ export class ContactsComponent implements OnInit {
   }
 
   loadContacts() {
-    const params: any = {
+    const filters: any = {
       ...this.filters,
-      page: this.page,
-      limit: this.pageSize,
+      tags: this.selectedTags,
+      tagLogic: this.tagLogic,
+      category: this.category,
+      isFavorite: this.isFavorite,
+      search: this.filters.name || undefined
     };
 
-    this.contactsService.getContacts(this.filters, this.page, this.pageSize).subscribe({
+    this.contactsService.getContacts(filters, this.page, this.pageSize, { sortBy: this.sortBy, sortOrder: this.sortOrder }).subscribe({
       next: (data) => {
         this.contacts = data.contacts;
-        this.totalPages = data.totalPages;
-        this.page = data.page;
+        this.totalPages = data.pagination.pages;
+        this.page = data.pagination.page;
       },
       error: (error) => {
         // Error is already handled by the interceptor
@@ -85,6 +98,13 @@ export class ContactsComponent implements OnInit {
         this.totalPages = 1;
         this.page = 1;
       }
+    });
+  }
+
+  loadTags() {
+    this.contactsService.getTags().subscribe({
+      next: (data) => { this.tagsList = data.tags || []; },
+      error: () => { this.tagsList = []; }
     });
   }
 
@@ -127,6 +147,25 @@ export class ContactsComponent implements OnInit {
   }
 
   onFilterChange() {
+    this.page = 1;
+    this.loadContacts();
+  }
+
+  toggleTag(tag: string) {
+    const idx = this.selectedTags.indexOf(tag);
+    if (idx === -1) this.selectedTags.push(tag);
+    else this.selectedTags.splice(idx, 1);
+    this.onFilterChange();
+  }
+
+  clearFilters() {
+    this.filters = { name: '', phone: '', address: '' };
+    this.selectedTags = [];
+    this.tagLogic = 'OR';
+    this.category = null;
+    this.isFavorite = null;
+    this.sortBy = 'createdAt';
+    this.sortOrder = 'desc';
     this.page = 1;
     this.loadContacts();
   }

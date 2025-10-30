@@ -13,21 +13,30 @@ export class ContactsService {
   constructor(private http: HttpClient, private router: Router) {}
 
   getContacts(
-    filters: { name?: string; phone?: string; address?: string },
+    filters: { name?: string; phone?: string; address?: string; tags?: string[]; tagLogic?: 'AND'|'OR'; category?: string; isFavorite?: boolean },
     page: number,
-    limit: number
-  ): Observable<{ contacts: Contact[]; totalContacts: number; totalPages: number; page: number }> {
+    limit: number,
+    options?: { sortBy?: string; sortOrder?: 'asc'|'desc' }
+  ): Observable<{ contacts: Contact[]; pagination: { total: number; page: number; limit: number; pages: number }; filters: any }> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        params = params.set(key, value);
+    if (options?.sortBy) params = params.set('sortBy', options.sortBy);
+    if (options?.sortOrder) params = params.set('sortOrder', options.sortOrder);
+
+    Object.entries(filters || {}).forEach(([key, value]) => {
+      if (value === undefined || value === null) return;
+      if (Array.isArray(value)) {
+        params = params.set(key, value.join(','));
+      } else if (typeof value === 'boolean') {
+        params = params.set(key, value ? 'true' : 'false');
+      } else {
+        params = params.set(key, String(value));
       }
     });
 
-    return this.http.get<{ contacts: Contact[]; totalContacts: number; totalPages: number; page: number }>(
+    return this.http.get<{ contacts: Contact[]; pagination: { total: number; page: number; limit: number; pages: number }; filters: any }>(
       this.apiUrl,
       { params }
     );
@@ -43,6 +52,10 @@ export class ContactsService {
 
   editContact(contact: Contact): Observable<Contact> {
     return this.http.put<Contact>(`${this.apiUrl}/${contact._id}`, contact);
+  }
+
+  getTags(): Observable<{ tags: string[] }> {
+    return this.http.get<{ tags: string[] }>(`${this.apiUrl}/tags`);
   }
 
   deleteContact(id: string) {

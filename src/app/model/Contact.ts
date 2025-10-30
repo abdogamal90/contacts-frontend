@@ -4,4 +4,7 @@ export interface Contact {
   phone: string;
   address: string;
   notes: string;
+  tags?: string[];
+  category?: 'personal' | 'work' | 'family' | 'business' | 'other' | null;
+  isFavorite?: boolean;
 }

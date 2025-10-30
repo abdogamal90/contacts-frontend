@@ -19,9 +19,17 @@ export class NewContactComponent {
     name: '',
     phone: '',
     address: '',
-    notes: ''
+    notes: '',
+    tags: [],
+    category: null,
+    isFavorite: false
   };
   contactForm: FormGroup;
+  
+  // Tag management
+  newTag: string = '';
+  selectedTags: string[] = [];
+  existingTags: string[] = [];
 
   constructor(
     private contactsService: ContactsService, 
@@ -46,8 +54,65 @@ export class NewContactComponent {
       ]),
       notes: new FormControl('', [
         Validators.maxLength(500)
-      ])
+      ]),
+      category: new FormControl(null),
+      isFavorite: new FormControl(false)
     });
+    
+    // Load existing tags
+    this.loadExistingTags();
+  }
+  
+  loadExistingTags() {
+    this.contactsService.getTags().subscribe({
+      next: (data) => { this.existingTags = data.tags || []; },
+      error: () => { this.existingTags = []; }
+    });
+  }
+  
+  addTag() {
+    const tag = this.newTag.trim().toLowerCase();
+    
+    if (!tag) {
+      this.notification.warning('Please enter a tag');
+      return;
+    }
+    
+    if (tag.length > 20) {
+      this.notification.warning('Tag cannot exceed 20 characters');
+      return;
+    }
+    
+    if (this.selectedTags.includes(tag)) {
+      this.notification.info('Tag already added');
+      return;
+    }
+    
+    if (this.selectedTags.length >= 10) {
+      this.notification.warning('Maximum 10 tags allowed per contact');
+      return;
+    }
+    
+    this.selectedTags.push(tag);
+    this.newTag = '';
+    this.notification.success(`Tag "${tag}" added`);
+  }
+  
+  removeTag(tag: string) {
+    this.selectedTags = this.selectedTags.filter(t => t !== tag);
+  }
+  
+  toggleExistingTag(tag: string) {
+    const index = this.selectedTags.indexOf(tag);
+    if (index === -1) {
+      if (this.selectedTags.length >= 10) {
+        this.notification.warning('Maximum 10 tags allowed per contact');
+        return;
+      }
+      this.selectedTags.push(tag);
+    } else {
+      this.selectedTags.splice(index, 1);
+    }
   }
 
   createContact() {
@@ -61,7 +126,14 @@ export class NewContactComponent {
       return;
     }
 
-    this.contactsService.createContact(this.contactForm.value).subscribe(
+    const contactData = {
+      ...this.contactForm.value,
+      tags: this.selectedTags,
+      category: this.contactForm.value.category || null,
+      isFavorite: this.contactForm.value.isFavorite || false
+    };
+
+    this.contactsService.createContact(contactData).subscribe(
       (createdContact) => {
         this.notification.success(`Contact "${createdContact.name}" created successfully!`);
         this.router.navigate(['/contacts']);

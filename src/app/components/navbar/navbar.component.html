@@ -1,6 +1,6 @@
 <nav class="main-nav">
   <div class="nav-brand">
-    <span class="brand-text">Contacts App</span>
+    <span class="brand-text"><a routerLink="/">Contacts App</a></span>
   </div>
   
   <div class="nav-links" *ngIf="isLoggedIn">
@@ -12,6 +12,5 @@
   <div class="nav-user">
     <span class="username" *ngIf="username">{{ username }}</span>
     <button class="logout-btn" *ngIf="isLoggedIn" (click)="logout()">Logout</button>
-    <button class="login-btn" *ngIf="!isLoggedIn" (click)="login()">Login</button>
   </div>
 </nav>
