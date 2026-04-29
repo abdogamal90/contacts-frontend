@@ -1,12 +1,6 @@
-# Disable the @netlify/angular-runtime plugin — this app is a static SPA (no SSR).
-# Redirects handle the API proxy to EC2.
-[[plugins]]
-  package = "@netlify/angular-runtime"
-  [plugins.inputs]
-    disable = true
-
 # Proxy API + Socket.io calls to EC2 so the browser stays on HTTPS (no mixed content).
 # These run as plain Netlify redirects — no SSR edge function intercepts them now.
+# IMPORTANT: @netlify/angular-runtime must also be removed from the Netlify UI (Site settings → Plugins).
 [[redirects]]
   from = "/api/*"
   to = "http://3.84.133.199:8000/api/:splat"
