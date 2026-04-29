@@ -12,3 +12,9 @@
   to = "http://3.84.133.199:8000/socket.io/:splat"
   status = 200
   force = true
+
+# Angular client-side routes (static files are still served first by Netlify)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
