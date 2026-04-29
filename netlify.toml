@@ -1,7 +1,18 @@
-# API + Socket.io are proxied in `src/server.ts` (`netlifyCommonEngineHandler`) because the
-# Angular SSR edge function runs on `/*` before these redirects would apply.
+# Proxy API + Socket.io calls to EC2 so the browser stays on HTTPS (no mixed content).
+# These run as plain Netlify redirects — no SSR edge function intercepts them now.
+[[redirects]]
+  from = "/api/*"
+  to = "http://3.84.133.199:8000/api/:splat"
+  status = 200
+  force = true
 
-# Angular client-side routes (static assets are served first by Netlify)
+[[redirects]]
+  from = "/socket.io/*"
+  to = "http://3.84.133.199:8000/socket.io/:splat"
+  status = 200
+  force = true
+
+# Angular SPA — serve index.html for all unmatched routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
