@@ -6,7 +6,10 @@ import { environment } from '../../environments/environment';
 export class SocketService {
   private socket: Socket;
   constructor() {
-    this.socket = io(environment.apiBaseUrl);
+    // Same host as the SPA when apiBaseUrl is empty (Netlify proxy); else direct (e.g. local http → http API).
+    this.socket = environment.apiBaseUrl
+      ? io(environment.apiBaseUrl)
+      : io({ path: '/socket.io/' });
   }
 
   startEditing(contactId: string, username: string) {

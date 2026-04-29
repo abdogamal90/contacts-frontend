@@ -1,0 +1,14 @@
+# Proxy API + Socket.io to your EC2 Node server so the browser only talks to HTTPS (same origin).
+# This avoids "blocked:mixed-content" when the SPA is on Netlify and the API is http:// on EC2.
+# Update the host if your EC2 public IP changes.
+[[redirects]]
+  from = "/api/*"
+  to = "http://3.84.133.199:8000/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/socket.io/*"
+  to = "http://3.84.133.199:8000/socket.io/:splat"
+  status = 200
+  force = true

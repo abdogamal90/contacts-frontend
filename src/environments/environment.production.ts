@@ -1,5 +1,9 @@
-/** Replaces `environment.ts` for `ng build` (production). Update when you use a domain or new IP. */
+/**
+ * Production (e.g. Netlify): use same-origin URLs so the browser stays on HTTPS.
+ * Netlify proxies `/api/*` and `/socket.io/*` to EC2 — see `netlify.toml`.
+ * EC2 `FRONTEND_ORIGINS` should still list your Netlify site URL (e.g. https://….netlify.app).
+ */
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://3.84.133.199:8000',
+  apiBaseUrl: '',
 };
